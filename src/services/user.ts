@@ -56,3 +56,7 @@ export async function updateThreshold(payload: object){
     data: payload,
   });
 }
+
+export async function getHeathyStatus(payload: string){
+  return request(`${baseURL}/api/getHealthyStatus?userid=1&date=${payload}`);
+}

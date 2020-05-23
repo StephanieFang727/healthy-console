@@ -25,15 +25,10 @@ const formLayout = {
 };
 
 const UpdateForm: React.FC<UpdateFormProps> = (props) => {
-  const [formVals, setFormVals] = useState<FormValueType>({
-    bulletin: props.values.bulletin,
-  });
-
 
   const [form] = Form.useForm();
 
   const {
-    onSubmit: handleUpdate,
     onCancel: handleUpdateModalVisible,
     updateModalVisible,
     values,
@@ -42,34 +37,33 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
   return (
     <Modal
       width={640}
-      bodyStyle={{ padding: '32px 40px 48px' }}
+      bodyStyle={{ padding: '8px 8px 8px' }}
       destroyOnClose
-      title="修改公告"
+      title="每日健康状况分析"
       visible={updateModalVisible}
-      onOk={()=>{
-        form
-          .validateFields()
-          .then(values => {
-            form.resetFields();
-            handleUpdate(values);
-          })
-      }}
       onCancel={() => handleUpdateModalVisible()}
+      footer={null}
     >
       <Form
         {...formLayout}
         form={form}
         initialValues={{
-          bulletin: values.bulletin,
+          comment: values.comment,
+          status: values.status,
         }}
       >
           <Form.Item
-          name="bulletin"
-          label="公告内容"
-          // rules={[{ required: true, message: 'Please input username!', whitespace: true }]}
+          name="comment"
+          label="评价内容"
           >
-          <Input.TextArea/>
+          <Input.TextArea style={{ height: 120}}/>
       </Form.Item>
+        <Form.Item
+          name="status"
+          label="综合评价"
+        >
+          <Input/>
+        </Form.Item>
       </Form>
     </Modal>
   );

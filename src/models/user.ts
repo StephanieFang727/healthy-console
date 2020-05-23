@@ -1,6 +1,6 @@
 import { Effect, Reducer } from 'umi';
 
-import {queryCurrent, updateUserInfo, getThreshold, updateThreshold} from '@/services/user';
+import {queryCurrent, updateUserInfo, getThreshold, updateThreshold, getHeathyStatus} from '@/services/user';
 import {notification} from "antd";
 import {Subscription} from "@@/plugin-dva/connect";
 
@@ -21,6 +21,7 @@ export interface CurrentUser {
 export interface UserModelState {
   currentUser?: CurrentUser;
   threshold?: object;
+  healthyStatus?:object;
 }
 
 export interface UserModelType {
@@ -32,6 +33,7 @@ export interface UserModelType {
     updateUserInfo: Effect;
     fetchThreshold: Effect;
     updateThreshold: Effect;
+    fetchHealthyStatus: Effect;
   };
   reducers: {
     save: Reducer;
@@ -103,7 +105,21 @@ const UserModel: UserModelType = {
       yield put({
         type: 'fetchThreshold',
       });
+    },
+    *fetchHealthyStatus({payload},{call, put}){
+      const response = yield call(getHeathyStatus, payload);
+      if (response.status!=='error'){
+        yield put({
+          type: 'save',
+          healthyStatus: response,
+        });
+      }else{
+        notification.error({
+          message: 'fail to update!'
+        })
+      }
     }
+
   },
 
   reducers: {

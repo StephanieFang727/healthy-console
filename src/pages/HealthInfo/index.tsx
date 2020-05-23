@@ -1,15 +1,28 @@
-import { DownOutlined, PlusOutlined } from '@ant-design/icons';
-import { Button, Divider, Dropdown, Menu, message, Input } from 'antd';
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef} from 'react';
+import { connect } from 'umi';
+import {ConnectState} from "@/models/connect";
+import { Button, } from 'antd';
+import moment from 'moment'
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 
 
 import { TableListItem } from './data.d';
 import { getHealthInfo } from '../../services/user'
+import UpdateForm from "./components/UpdateForm";
 
-const TableList: React.FC<{}> = () => {
+const TableList: React.FC<{}> = ({dispatch, healthyStatus}) => {
   const actionRef = useRef<ActionType>();
+  const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
+  const onClick = (date)=>{
+    handleUpdateModalVisible(true);
+    if(dispatch){
+      dispatch({
+        type: 'user/fetchHealthyStatus',
+        payload: date,
+      });
+    }
+  }
   const columns: ProColumns<TableListItem>[] = [
     {
       title: 'ID',
@@ -41,6 +54,20 @@ const TableList: React.FC<{}> = () => {
       dataIndex: 'temperature',
       width: '10%',
     },
+    {
+      title: '日期',
+      dataIndex: 'date',
+      width: '10%',
+      render:(item)=>
+        moment(item).format('YYYY-MM-DD')
+    },
+    {
+      title: '每日健康状况分析',
+      dataIndex: 'date',
+      width: '10%',
+      render:(item, record)=>
+        <Button type='primary' onClick={()=>onClick(moment(record.date).format('YYYY-MM-DD'))}>点击查看</Button>
+    },
   ];
   return (
     <PageHeaderWrapper>
@@ -51,8 +78,25 @@ const TableList: React.FC<{}> = () => {
         request={()=>getHealthInfo(localStorage.getItem('userid'))}
         columns={columns}
       />
+      {healthyStatus && Object.keys(healthyStatus).length ? (
+        <UpdateForm
+          onCancel={() => {
+            handleUpdateModalVisible(false);
+            if(dispatch){
+              dispatch({
+                type: 'user/save',
+                healthyStatus: {},
+              });
+            }
+          }}
+          updateModalVisible={updateModalVisible}
+          values={healthyStatus}
+        />
+      ) : null}
     </PageHeaderWrapper>
   );
 };
 
-export default TableList;
+export default connect(({ user,}: ConnectState) => ({
+  healthyStatus: user.healthyStatus,
+}))(TableList);

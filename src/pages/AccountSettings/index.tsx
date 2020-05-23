@@ -69,6 +69,9 @@ const AccountSettings = ({currentUser, loading, dispatch}) => {
         person_name: currentUser.person_name,
         age: currentUser.age,
         sex: currentUser.sex,
+        birthday: currentUser.birthday,
+        identityNumber: currentUser.identityNumber,
+        address: currentUser.address,
       }}
       scrollToFirstError
     >
@@ -87,6 +90,24 @@ const AccountSettings = ({currentUser, loading, dispatch}) => {
       <Form.Item
         name="sex"
         label="性别"
+      >
+        <Input />
+      </Form.Item>
+      <Form.Item
+        name="birthday"
+        label="生日"
+      >
+        <Input />
+      </Form.Item>
+      <Form.Item
+        name="identityNumber"
+        label="身份证号"
+      >
+        <Input />
+      </Form.Item>
+      <Form.Item
+        name="address"
+        label="地址"
       >
         <Input />
       </Form.Item>
