@@ -154,7 +154,7 @@ const UserModel: UserModelType = {
   subscriptions: {
     setup ({ dispatch, history }) {
       return history.listen(({ pathname, query }) => {
-        if (pathname === '/threshold') {
+        if (pathname === '/threshold' || pathname === '/health') {
           dispatch({
             type: 'fetchThreshold',
           })
